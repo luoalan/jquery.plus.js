@@ -40,7 +40,28 @@
   }
 
   function resolveTag(name){
-    $(this).html('this is '+name);
+    var id = $.randomId('tag_');
+    var template = tags[name]['template'];
+    var tmp_dom = $('<div>').html(template);
+
+    //css
+    var style = tmp_dom.find('style').attr('tid',id);
+    var less_str = '[tid='+id+']'+style.html();
+    less.render(less_str,function(err,res){
+        !err && $('head').append( style.html(res.css) );
+    });
+
+    //js
+    var script = tmp_dom.find('script');
+    var dom = tmp_dom.find(':not(style):not(script):first').attr('tid',id);
+    var main = new Function('egg',script.html());
+
+    dom.on('destroy',function(){
+      style.remove();
+    });
+
+    $(this).replaceWith(dom);
+    main.call(dom,this);
   }
 
   function execOnTag(name,func){
