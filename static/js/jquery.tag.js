@@ -38,7 +38,7 @@
 
   function getTagTemplate(name,src,version,callback){
     var tags_cache_key = 'jquery_tags';
-    var tag_store_key = [name,src,version].join(':');console.log(tag_store_key);
+    var tag_store_key = [name,src,version].join(':');
 
     var cached_tags = $.getLocalJsonData(tags_cache_key) || {};
 
