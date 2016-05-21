@@ -5,26 +5,25 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
     <title>Tag.js Demo</title>
     <script>less={async:true};</script><script src="/static/js/less.js"></script>
-
+    <style media="screen">
+      body{transition:background 1s;}
+    </style>
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.destroy-event.js"></script>
     <script src="/static/js/jquery.value.js"></script>
     <script src="/static/js/jquery.tag.js"></script>
     <script src="/static/js/jquery.render.js"></script>
     <script>
-      $.defineTag('mytitle','/static/tag/mytitle.html');
+      //$.defineTag(name,src,version);
+      $.defineTag('title','/static/tag/title.html',0.5);
+      $.defineTag('example','/static/tag/example.html',0.5);
+      $(function(){
+        $('body').render({hello:'Tag.js'});
+      });
     </script>
   </head>
   <body>
-    <span data-tag="mytitle">啦啦啦啦</span>
-    <div if="nihao">
-      <h1>very good!</h1>
-      <div if="nihao">
-        <div data-src="nihao"></div>
-      </div>
-    </div>
-    <script>
-      $('body').render({nihao:'true'});
-    </script>
+    <h1 if="hello" data-tag="title">Hello <span data-src="hello"></span></h1>
+    <div data-tag="example"></div>
   </body>
 </html>

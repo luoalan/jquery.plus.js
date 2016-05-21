@@ -71,11 +71,11 @@ $.extend({
             return result;
         }
     }(),
-    omsSaveLocalJsonData: function(name,obj){
+    saveLocalJsonData: function(name,obj){
         var prefix = 'rango_';
         localStorage[prefix+name] = JSON.stringify(obj);
     },
-    omsGetLocalJsonData: function(name){
+    getLocalJsonData: function(name){
         var prefix = 'rango_';
         try{
             return JSON.parse(localStorage[prefix+name]);
@@ -83,9 +83,9 @@ $.extend({
             return;
         }
     },
-    omsUpdateLocalJsonData: function(name,key,value){
-        var info_cache = $.omsGetLocalJsonData(name) || {};
+    updateLocalJsonData: function(name,key,value){
+        var info_cache = $.getLocalJsonData(name) || {};
         info_cache[key] = value;
-        $.omsSaveLocalJsonData(name,info_cache);
+        $.saveLocalJsonData(name,info_cache);
     }
 });

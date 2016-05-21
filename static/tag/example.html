@@ -1,0 +1,52 @@
+<style>
+{
+  //there is the place where you sould put some scoped css in here;
+  .table{
+    display:table; width:100%;
+    .cell{display:table-cell; width:50%;
+      p{white-space:pre-wrap; font-size:14px;}
+      textarea{width:100%; min-height:300px;}
+    }
+  }
+}
+</style>
+
+<div>
+  <div class="table">
+    <div class="cell">
+      <hd data-tag="title">this is a example!</hd>
+      <p>
+        1. one tag defining file sould contain three parts;
+
+        2. the three parts are:
+
+          2.1. style dom (scoped css)
+            innerHTML must begin with "{" and end with "}"
+            you can use any style/less syntax
+            the style will affect the main dom
+
+          2.2. normal dom (the main dom)
+            the style and the script in this file will affect this dom
+
+          2.3. script dom (the entrance js)
+            the script will run in a closure
+            in the closure "this" point to the main dom(jquery object)
+            this has a property named "egg" which point to the original dom(jquery object) which was replaced by main dom
+            this has a property named "tag" which point to the defining tag
+            this has a property named "tid" which point to the main dom attribute tid(a randomId for connect with scoped css)
+      </p>
+    </div>
+    <div class="cell">
+      <h1>the example source code:</h1>
+      <textarea></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+  var me = this;
+  $(this).render();
+  $.get('/static/tag/example.html',function(res){
+    me.find('textarea').val(res);
+  });
+</script>

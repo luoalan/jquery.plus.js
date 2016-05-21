@@ -1,0 +1,46 @@
+<style>
+{
+  @red:red;
+  @white:white;
+  @gray:grey;
+  .red(){
+    background:red;
+  }
+  font-size:50px; line-height:1; cursor:pointer; transition:color 1s;
+  &:after{content:' this is my user-defined title';color:@white;font-size:14px;}
+}
+</style>
+
+<h1></h1>
+
+<script>
+  var me = this;
+
+  var timer = setInterval(function(){
+    me.css('color',randomColor());
+
+    //the next several lines are bad example, don't try to controller things out of the scope;
+    (
+      $('body').attr('bg_ctrl_tid')==me.tid || me.tag.instances.indexOf( $('body').attr('bg_ctrl_tid') )<0
+    ) && (
+      $('body').attr('bg_ctrl_tid',me.tid).css('background',randomColor())
+    )
+
+  },1000);
+
+  this.html(this.egg.html());
+
+  $(this).on('destroy',function(){
+    clearInterval(timer);
+  }).on('click',function(){
+    me.remove();
+  });
+
+  function randomColor(){
+    return 'rgba(' + randInt(255) + ', '+ randInt(255) +','+ randInt(255) +','+ randInt(255) +')';
+  }
+
+  function randInt(max){
+    return Math.floor(Math.random()*(max+1));
+  }
+</script>
