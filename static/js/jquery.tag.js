@@ -1,5 +1,6 @@
 (function(){
   var tags = {};
+  var shares = {};
 
   $.extend({
     defineTagOnce: defineTagOnce,
@@ -73,16 +74,19 @@
     var tmp_dom = $('<div>').html(template);
 
     //css
-    var style = tmp_dom.find('style');
+    var style = tmp_dom.children('style');
     var less_str = '[tid='+tid+']'+style.html();
     less.render(less_str,function(err,res){
         !err && $('head').append( style.html(res.css) );
     });
 
     //js
-    var script = tmp_dom.find('script');
-    var dom = tmp_dom.find(':not(style):not(script):first').attr('tid',tid);
-    var main = new Function('egg',script.html());
+    var script = tmp_dom.children('script:not([src])');
+    var remote_scripts = tmp_dom.children('script[src]').map(function(){
+      return this.src;
+    }).toArray();
+    var dom = tmp_dom.children(':not(style):not(script):first').attr('tid',tid);
+    var main = new Function(script.html());
 
     tag.instances.push(tid);
     dom.on('destroy',function(){
@@ -97,8 +101,9 @@
     dom.tag = this.tag = tag;
     dom.tid = tid;
     dom.egg = this;
+    dom.family_share = shares[name] = (shares[name] || {});
     $(this).replaceWith(dom);
-    main.call(dom,this);
+    remote_scripts.length ? $.loadScripts(remote_scripts, main.bind(dom)) : main.call(dom);
   }
 
   function execOnTag(name,func){

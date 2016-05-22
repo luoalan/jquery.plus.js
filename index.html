@@ -10,13 +10,17 @@
     </style>
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.destroy-event.js"></script>
-    <script src="/static/js/jquery.value.js"></script>
+    <script src="/static/js/jquery.utilities.js"></script>
     <script src="/static/js/jquery.tag.js"></script>
     <script src="/static/js/jquery.render.js"></script>
     <script>
-      //$.defineTag(name,src,version);
-      $.defineTag('title','/static/tag/title.html',0.5);
-      $.defineTag('example','/static/tag/example.html',0.5);
+      !function(version){
+        //$.defineTag(name,src,version);
+        $.defineTag('title','/static/tag/title.html',version);
+        $.defineTag('example','/static/tag/example.html',version);
+        $.defineTag('human','/static/tag/human.html',version);
+      }(Math.random());
+
       $(function(){
         $('body').render({hello:'Tag.js'});
       });
@@ -25,5 +29,6 @@
   <body>
     <h1 if="hello" data-tag="title">Hello <span data-src="hello"></span></h1>
     <div data-tag="example"></div>
+    <div data-tag="human"></div>
   </body>
 </html>

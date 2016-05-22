@@ -16,6 +16,8 @@
 <script>
   var me = this;
 
+  !$.pullValue(me,'family_share.body_bg_ctrl_original_bg') && $.pushValue(me,'family_share.body_bg_ctrl_original_bg',$('body').css('background'));
+
   var timer = setInterval(function(){
     me.css('color',randomColor());
 
@@ -31,6 +33,7 @@
   this.html(this.egg.html());
 
   $(this).on('destroy',function(){
+    $('body').attr('bg_ctrl_tid')==me.tid && $('body').removeAttr('bg_ctrl_tid').css('background',$.pullValue(me,'family_share.body_bg_ctrl_original_bg'));
     clearInterval(timer);
   }).on('click',function(){
     me.remove();

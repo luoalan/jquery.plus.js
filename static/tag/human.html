@@ -1,0 +1,20 @@
+<!--
+  this is a scripts load example
+
+  all the remote scripts(with src) before the main script (without src)
+    will load and exec before the main script
+ -->
+
+<style>
+{
+  font-style:italic;font-size:xx-large;
+}
+</style>
+
+<div></div>
+
+<script src="/static/tag/human/example.humanize.js"></script>
+<script src="/static/tag/human/example.sing.js"></script>
+<script>
+  humanize(this).say('Hello World!').sing();
+</script>
