@@ -82,9 +82,7 @@
 
     //js
     var script = tmp_dom.children('script:not([src])');
-    var remote_scripts = tmp_dom.children('script[src]').map(function(){
-      return this.src;
-    }).toArray();
+    var remote_scripts = tmp_dom.children('script[src]');
     var dom = tmp_dom.children(':not(style):not(script):first').attr('tid',tid);
     var main = new Function(script.html());
 
@@ -103,7 +101,17 @@
     dom.egg = this;
     dom.family_share = shares[name] = (shares[name] || {});
     $(this).replaceWith(dom);
-    remote_scripts.length ? $.loadScripts(remote_scripts, main.bind(dom)) : main.call(dom);
+    remote_scripts.length ? loadScripts(remote_scripts, main.bind(dom)) : main.call(dom);
+  }
+
+  function loadScripts(scripts,callback){
+    var scripts = scripts.map(function(){
+      return this.src;
+    }).toArray();
+
+    //todo support "local cache by version and unordered"
+
+    $.loadScripts(scripts, callback)
   }
 
   function execOnTag(name,func){
