@@ -36,6 +36,7 @@
     $('body').attr('bg_ctrl_tid')==me.tid && $('body').removeAttr('bg_ctrl_tid').css('background',$.pullValue(me,'family_share.body_bg_ctrl_original_bg'));
     clearInterval(timer);
   }).on('click',function(){
+    // me.container.reload({hello:me.html()});
     me.remove();
   });
 

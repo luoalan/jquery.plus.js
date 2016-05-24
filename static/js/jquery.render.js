@@ -96,7 +96,7 @@ $.fn.extend({
         }).each(function(){
             var tagname = $(this).attr('data-tag');
             var egg = $(this);
-            eggcontainer = me;
+            egg.container = me;
             egg.parseAs(tagname);
         });
 
