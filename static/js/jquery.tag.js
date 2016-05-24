@@ -99,6 +99,7 @@
     dom.tag = this.tag = tag;
     dom.tid = tid;
     dom.egg = this;
+    domcontainer = thiscontainer;
     dom.family_share = shares[name] = (shares[name] || {});
     $(this).replaceWith(dom);
     remote_scripts.length ? loadScripts(remote_scripts, main.bind(dom)) : main.call(dom);

@@ -36,6 +36,7 @@ $.fn.extend({
     },
     render: function(data){
         var me = this;
+        this.data('gene',this.html());
         //save data first
         $(me).setCoreData(data);
 
@@ -94,10 +95,19 @@ $.fn.extend({
           return !$(this).closest('.if-stuck',me).length;
         }).each(function(){
             var tagname = $(this).attr('data-tag');
-            $(this).parseAs(tagname);
+            var egg = $(this);
+            eggcontainer = me;
+            egg.parseAs(tagname);
         });
 
-        return me;
+        return me.addClass('rendered');
+    },
+    reload: function(data){
+      if(this.is('.rendered')){
+        var cloneBody = $(this.data('gene'));
+        this.html( cloneBody );
+      }
+      return this.render(data);
     },
     loadData: function(url){
         var me = this;
