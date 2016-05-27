@@ -85,7 +85,7 @@ $.extend({
   },
   updateLocalJsonData: function(name,key,value){
     var info_cache = $.getLocalJsonData(name) || {};
-    info_cache[key] = value;
+    $.pushValue(info_cache, key, value);
     $.saveLocalJsonData(name,info_cache);
   },
   loadScripts: function(scripts,callback,inqueue){

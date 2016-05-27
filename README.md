@@ -1,6 +1,62 @@
-# component.js
+# jquery.plus.js
 
-##combine js
+## contain all files as follow
+
+### less-pre.js
+```
+less={async:true};
+```
+
+### less.js
+https://github.com/less/less.js
+
+### jquery.min.js
+https://github.com/jquery/jquery
+
+### jquery.destroy-event.js
+https://github.com/IndigoUnited/jquery.destroy-event
+
+### jquery.utilities.js
+```
+  //Add some method to jQuery
+  randomId
+  pullValue
+  pushValue
+  dirtyCheck
+  cacheUnchangedCheck
+  saveLocalJsonData
+  getLocalJsonData
+  updateLocalJsonData
+  loadScripts
+```
+
+### jquery.component.js
+```
+  //Add some method to jQuery
+  defineComponentOnce
+  defineComponent
+
+  //Add some method to jQuery.fn
+  parseAsComponent
+```
+
+### jquery.render.js
+```
+  //Add some obj to jQuery
+  renderFilters
+
+  //Add some method to jQuery.fn
+  eval
+  evalAttr
+  render
+  reload
+  loadData
+  getCoreData
+  setCoreData
+  renderTable
+```
+
+##combine files
 ```
   uglifyjs \  
     less-pre.js \    
@@ -12,7 +68,7 @@
     jquery.render.js \  
     -o jquery.plus.min.js -c  
 ```
-  
+
 ##start up
 ```
   sudo nodemon index.js \  
