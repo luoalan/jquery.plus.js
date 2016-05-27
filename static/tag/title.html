@@ -23,17 +23,17 @@
 
     //the next several lines are bad example, don't try to controller things out of the scope;
     (
-      $('body').attr('bg_ctrl_tid')==me.tid || me.tag.instances.indexOf( $('body').attr('bg_ctrl_tid') )<0
+      $('body').attr('bg_ctrl_cid')==me.cid || me.component.instances.indexOf( $('body').attr('bg_ctrl_cid') )<0
     ) && (
-      $('body').attr('bg_ctrl_tid',me.tid).css('background',randomColor())
+      $('body').attr('bg_ctrl_cid',me.cid).css('background',randomColor())
     )
 
   },1000);
 
-  this.html(this.egg.html());
+  this.html(this.zygote.html());
 
   $(this).on('destroy',function(){
-    $('body').attr('bg_ctrl_tid')==me.tid && $('body').removeAttr('bg_ctrl_tid').css('background',$.pullValue(me,'family_share.body_bg_ctrl_original_bg'));
+    $('body').attr('bg_ctrl_cid')==me.cid && $('body').removeAttr('bg_ctrl_cid').css('background',$.pullValue(me,'family_share.body_bg_ctrl_original_bg'));
     clearInterval(timer);
   }).on('click',function(){
     // me.container.reload({hello:me.html()});

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>Tag.js Demo</title>
+    <title>Component.js Demo</title>
     <script>less={async:true};</script><script src="/static/js/less.js"></script>
     <style media="screen">
       body{transition:background 1s;}
@@ -11,24 +11,25 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.destroy-event.js"></script>
     <script src="/static/js/jquery.utilities.js"></script>
-    <script src="/static/js/jquery.tag.js"></script>
+    <script src="/static/js/jquery.component.js"></script>
     <script src="/static/js/jquery.render.js"></script>
     <script>
       !function(version){
-        //$.defineTag(name,src,version);
-        $.defineTag('title','/static/tag/title.html',version);
-        $.defineTag('example','/static/tag/example.html',version);
-        $.defineTag('human','/static/tag/human.html',version);
+        //$.defineComponent(name,src,version);
+        $.defineComponent('title','/static/tag/title.html',version);
+        $.defineComponent('example','/static/tag/example.html',version);
+        $.defineComponent('human','/static/tag/human.html',version);
       }(Math.random());
 
       $(function(){
-        $('body').render({hello:'Tag.js'});
+        $('body').render({hello:'Component.js'});
       });
     </script>
   </head>
   <body>
-    <h1 if="hello" data-tag="title">Hello <span data-src="hello"></span></h1>
-    <div data-tag="example"></div>
-    <div data-tag="human"></div>
+    <h1 if="hello" component="title">Hello <span data-src="hello"></span></h1>
+    <div component="example"></div>
+    <div component="human"></div>
+    <div component="/static/tag/async.component.html"></div>
   </body>
 </html>

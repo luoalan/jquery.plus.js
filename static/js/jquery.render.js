@@ -91,13 +91,13 @@ $.fn.extend({
         });
 
         // special flag tag
-        $(me).find('[data-tag]').filter(function(){
+        $(me).find('[component]').filter(function(){
           return !$(this).closest('.if-stuck',me).length;
         }).each(function(){
-            var tagname = $(this).attr('data-tag');
-            var egg = $(this);
-            egg.container = me;
-            egg.parseAs(tagname);
+            var component_name = $(this).attr('component');
+            var zygote = $(this);
+            zygote.container = me;
+            zygote.parseAsComponent(component_name);
         });
 
         return me.addClass('rendered');

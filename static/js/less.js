@@ -119,7 +119,7 @@ module.exports = {
         var href = sheet.href || '';
 
         // If there is no title set, use the filename, minus the extension
-        var id = 'less:' + (sheet.title || utils.extractId(href));
+        var id = 'less:' + (sheet.title || utils.extraccid(href));
 
         // If this has already been inserted into the DOM, we may need to replace it
         var oldStyleNode = document.getElementById(id);
@@ -228,7 +228,7 @@ var utils = require("./utils"),
 module.exports = function(window, less, options) {
 
     function errorHTML(e, rootHref) {
-        var id = 'less-error-message:' + utils.extractId(rootHref || "");
+        var id = 'less-error-message:' + utils.extraccid(rootHref || "");
         var template = '<li><label>{line}</label><pre class="{class}">{content}</pre></li>';
         var elem = window.document.createElement('div'), timer, content, errors = [];
         var filename = e.filename || rootHref;
@@ -329,7 +329,7 @@ module.exports = function(window, less, options) {
     }
 
     function removeErrorHTML(path) {
-        var node = window.document.getElementById('less-error-message:' + utils.extractId(path));
+        var node = window.document.getElementById('less-error-message:' + utils.extraccid(path));
         if (node) {
             node.parentNode.removeChild(node);
         }
@@ -856,7 +856,7 @@ module.exports = function(less, options) {
 
 },{}],10:[function(require,module,exports){
 module.exports = {
-    extractId: function(href) {
+    extraccid: function(href) {
         return href.replace(/^[a-z-]+:\/+?[^\/]+/, '')  // Remove protocol & domain
             .replace(/[\?\&]livereload=\w+/, '')        // Remove LiveReload cachebuster
             .replace(/^\//, '')                         // Remove root /
