@@ -14,8 +14,19 @@
 
   $.fn.extend({
     parseAsComponent: function(name){
+      var original_name = name;
       name = encodeComponentName(name);
-      !hasComponent(name) && defineComponent(name,this.attr('src')||name,this.attr('version')||'');
+      !hasComponent(name) && defineComponent(
+        name,
+        this.attr('src') || original_name,
+        (function(){
+          try{
+            return eval(this.attr('version') || '');
+          }catch(e){
+            return this.attr('version') || '';
+          }
+        }).call(this)
+      );
       parseComponent.call(this,name);
       return this;
     }
@@ -44,12 +55,12 @@
   }
 
   function encodeComponentName(name){
-    return name.replace(/\./g,'____');
+    return name.replace(/\./g,'__').replace(/\//g,'_-');
   }
 
   function getComponentResource(name,src,version,callback){
     var components_cache_key = 'jquery_components';
-    var component_store_key = [name,src,version].join(':');
+    var component_store_key = [name,src,version].join('::');
 
     var cached_components = $.getLocalJsonData(components_cache_key) || {};
 
@@ -59,7 +70,7 @@
 
       //clear cache out of version
       for(var key in cached_components){
-        if(cached_components.hasOwnProperty(key) && key.split(':')[0]==name){
+        if(cached_components.hasOwnProperty(key) && key.split('::')[0]==name){
           // console.log(key);
           delete cached_components[key];
           break;
@@ -77,7 +88,7 @@
     execOnComponent(name,resolveComponent.bind(this,name));
   }
 
-  function resolveComponent(name){console.log(name);x = components;
+  function resolveComponent(name){
     var cid = $.randomId(name+'_');
     var component = components[name];
     var template = component['template'];
@@ -85,15 +96,21 @@
 
     //css
     var style = tmp_dom.children('style');
-    var less_str = '[cid='+cid+']'+style.html();
-    less.render(less_str,function(err,res){
-        !err && $('head').append( style.html(res.css) );
-    });
+    if(style.length){
+      var less_str = '[cid='+cid+']'+style.html();
+      less.render(less_str,function(err,res){
+          !err && $('head').append( style.html(res.css) );
+          err && console.warn('Failed to render style of ' + name);
+      });
+    }
 
     //js
     var script = tmp_dom.children('script:not([src])');
     var remote_scripts = tmp_dom.children('script[src]');
-    var dom = tmp_dom.children(':not(style):not(script):first').attr('cid',cid);
+    var dom = tmp_dom.children(':not(style):not(script):first');
+        dom = dom.length ? dom : this;
+    dom.attr('cid',cid);
+
     var main = new Function(script.html());
 
     component.instances.push(cid);

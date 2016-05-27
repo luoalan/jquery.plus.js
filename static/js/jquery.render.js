@@ -90,7 +90,7 @@ $.fn.extend({
             $(this).addClass(result);
         });
 
-        // special flag tag
+        // special component
         $(me).find('[component]').filter(function(){
           return !$(this).closest('.if-stuck',me).length;
         }).each(function(){

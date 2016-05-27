@@ -16,9 +16,9 @@
     <script>
       !function(version){
         //$.defineComponent(name,src,version);
-        $.defineComponent('title','/static/tag/title.html',version);
-        $.defineComponent('example','/static/tag/example.html',version);
-        $.defineComponent('human','/static/tag/human.html',version);
+        $.defineComponent('title','/static/component/title.html',version);
+        $.defineComponent('example','/static/component/example.html',version);
+        $.defineComponent('human','/static/component/human.html',version);
       }(Math.random());
 
       $(function(){
@@ -30,6 +30,6 @@
     <h1 if="hello" component="title">Hello <span data-src="hello"></span></h1>
     <div component="example"></div>
     <div component="human"></div>
-    <div component="/static/tag/async.component.html"></div>
+    <div component="/static/component/async.component.html" version="Math.random()">nihao,lala</div>
   </body>
 </html>

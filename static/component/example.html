@@ -16,7 +16,7 @@
     <div class="cell">
       <hd component="title">this is a example!</hd>
       <p>
-        1. one tag defining file sould contain three parts;
+        1. one component defining file sould contain three parts;
 
         2. the three parts are:
 
@@ -33,9 +33,9 @@
             in the closure "this" point to the main dom(jquery object)
             this has a property named "zygote" which point to the original dom(jquery object) which was replaced by main dom
             this has a property named "container" which point to the parent dom(jquery object) which trigger the render function
-            this has a property named "tag" which point to the defining tag
+            this has a property named "component" which point to the defining component
             this has a property named "cid" which point to the main dom attribute cid(a randomId for connect with scoped css)
-            this has a property named "family_share" which will share with all instances born form same tag
+            this has a property named "family_share" which will share with all instances born form same component
       </p>
     </div>
     <div class="cell">
@@ -48,7 +48,7 @@
 <script>
   var me = this;
   $(this).render();
-  $.get('/static/tag/example.html',function(res){
+  $.get('/static/component/example.html',function(res){
     me.find('textarea').val(res);
   });
 </script>
