@@ -1,5 +1,5 @@
 $.extend({
-  orzFilters: {
+  renderFilters: {
     '=': function(n1,n2){
       return n1==n2
     }
@@ -24,7 +24,7 @@ $.fn.extend({
                 var filterArray = filterFlag.split(':');
                 filterFuncName = filterArray.shift();
                 filterFuncName && (
-                    subData = $.orzFilters[filterFuncName].apply( $(me),[subData].concat(filterArray) )
+                    subData = $.renderFilters[filterFuncName].apply( $(me),[subData].concat(filterArray) )
                 );
             }
         });
