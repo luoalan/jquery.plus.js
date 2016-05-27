@@ -1,5 +1,8 @@
 # component.js
 
+##combine js
+uglifyjs less-pre.js less.js jquery.min.js jquery.destroy-event.js jquery.utilities.js jquery.component.js -o jquery.plus.min.js -c 
+
 ##start up
 
 `
