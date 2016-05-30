@@ -3,18 +3,6 @@
 <script src="/static/component/scripts/global.js" global ></script>
 <script src="/static/component/scripts/scope.js" scope version=""></script>
 <script>
-var me = this;
-var a = window.a = {a:0,b:1};
-
-with(a){
-  var a = 20;
-  b++;
-  var xx = 'take a smile';
-  yy = 'have a smile';
-}
-
-console.log(xx);
-console.log(yy);
-
-console.log(a);
+console.log('I can get ' + global_variable);
+console.log('I can get ' + scope_variable);
 </script>

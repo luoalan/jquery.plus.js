@@ -94,6 +94,8 @@ $.extend({
       sequential ? loadSequentialScripts(scripts,callback) : loadConcurrentScripts(scripts,callback);
     }
 
+    //TODO: control the scripts cache and run it manualy
+
     function loadSequentialScripts(scripts,callback){
       var script;
       scripts.length ? $.getScript(script = scripts.shift()).done(

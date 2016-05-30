@@ -162,7 +162,7 @@
 
     var checkcount = 0;
     var scripts_str_array = [];
-    scope_scripts.each(function(index,dom){console.log(this,scope_scripts);
+    scope_scripts.each(function(index,dom){
       if(this.src){
         $.ajax({url:this.src,dataType:'text'}).done(function(res){
           scripts_str_array[index] = res;
