@@ -102,13 +102,14 @@ $.extend({
     }
 
     function loadConcurrentScripts(scripts,callback){
+      var done_count = 0;
+
       scripts.length ? scripts.forEach(function(script){
         $.getScript(script).done(finishCheck).fail(failReport.bind(null,script))
       }) : (callback && callback());
 
-      var done_count = 0;
       function finishCheck(){
-        ++done_count >= scripts.length && callback && callback();
+        ++done_count == scripts.length && callback && callback();
       }
     }
 

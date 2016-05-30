@@ -164,7 +164,7 @@
     var scripts_str_array = [];
     scope_scripts.each(function(index,dom){console.log(this,scope_scripts);
       if(this.src){
-        $.get(this.src).done(function(res){
+        $.ajax({url:this.src,dataType:'text'}).done(function(res){
           scripts_str_array[index] = res;
           checkFinish();
         }).fail(function(){
