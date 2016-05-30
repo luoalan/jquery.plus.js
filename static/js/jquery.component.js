@@ -125,7 +125,7 @@
     $(this).replaceWith(dom);
 
     dom.addClass('scripts-loading');
-    loadGlobalScripts(global_scripts,loadScopeScripts.bind(null,scope_scripts, function(res){
+    loadGlobalScripts(global_scripts,loadScopeScripts.bind(null, scope_scripts, function(res){
       dom.removeClass('scripts-loading').addClass('scripts-loaded');
       var main = new Function(res);
       main.call(dom);
@@ -138,6 +138,7 @@
       return;
     }
 
+    var checkcount = 0;
     var sequential_script_srcs = [];
     var concurrent_script_srcs = [];
     scripts.each(function(){
@@ -148,7 +149,6 @@
     $.loadScripts(sequential_script_srcs, checkFinish, true);
     $.loadScripts(concurrent_script_srcs, checkFinish, false);
 
-    var checkcount = 0;
     function checkFinish(){
       ++checkcount == 2 && callback && callback();
     }
@@ -162,9 +162,8 @@
 
     var checkcount = 0;
     var scripts_str_array = [];
-    scope_scripts.each(function(index,dom){
+    scope_scripts.each(function(index,dom){console.log(this,scope_scripts);
       if(this.src){
-        console.log(this.src);
         $.get(this.src).done(function(res){
           scripts_str_array[index] = res;
           checkFinish();
