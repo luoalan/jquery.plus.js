@@ -7,7 +7,7 @@
     defineComponent: function(name,src,version){
       name = encodeComponentName(name);
       if( hasComponent(name) )
-      throw new Error();
+      throw new Error('component '+name+' has exsited');
       return defineComponent(name,src,version);
     }
   });
@@ -98,14 +98,14 @@
       });
     }
 
-    //js
-    var script = tmp_dom.children('script:not([src])');
-    var remote_scripts = tmp_dom.children('script[src]');
+    // scope_scripts, combine in one function named main and run after every instance created.
+    var scope_scripts = tmp_dom.children('script:not([src]),script[src][scope]');
+    // global_scripts, just run one time before scope_scripts;
+    var global_scripts = tmp_dom.children('script[src]:not([scope])');
+
     var dom = tmp_dom.children(':not(style):not(script):first');
     dom = dom.length ? dom : this;
     dom.attr('cid',cid);
-
-    var main = new Function(script.html());
 
     component.instances.push(cid);
     dom.on('destroy',function(){
@@ -123,10 +123,21 @@
     dom.container = this.container;
     dom.family_share = shares[name] = (shares[name] || {});
     $(this).replaceWith(dom);
-    remote_scripts.length ? loadScripts(remote_scripts, main.bind(dom)) : main.call(dom);
+
+    dom.addClass('scripts-loading');
+    loadGlobalScripts(global_scripts,loadScopeScripts.bind(null,scope_scripts, function(res){
+      dom.removeClass('scripts-loading').addClass('scripts-loaded');
+      var main = new Function(res);
+      main.call(dom);
+    }));
   }
 
-  function loadScripts(scripts,callback){
+  function loadGlobalScripts(scripts,callback){
+    if(!scripts.length){
+      callback && callback();
+      return;
+    }
+
     var sequential_script_srcs = [];
     var concurrent_script_srcs = [];
     scripts.each(function(){
@@ -140,6 +151,34 @@
     var checkcount = 0;
     function checkFinish(){
       ++checkcount == 2 && callback && callback();
+    }
+  }
+
+  function loadScopeScripts(scope_scripts, callback){
+    if(!scope_scripts.length){
+      callback && callback('');
+      return;
+    }
+
+    var checkcount = 0;
+    var scripts_str_array = [];
+    scope_scripts.each(function(index,dom){
+      if(this.src){
+        console.log(this.src);
+        $.get(this.src).done(function(res){
+          scripts_str_array[index] = res;
+          checkFinish();
+        }).fail(function(){
+          throw new Error(dom.src + ' load failed')
+        });
+      }else{
+        scripts_str_array[index] = this.innerHTML;
+        checkFinish();
+      }
+    });
+
+    function checkFinish(){
+      ++checkcount == scope_scripts.length && callback && callback( scripts_str_array.join(';') );
     }
   }
 

@@ -88,26 +88,32 @@ $.extend({
     $.pushValue(info_cache, key, value);
     $.saveLocalJsonData(name,info_cache);
   },
-  loadScripts: function(scripts,callback,sequential){
-    sequential = $.type(sequential)!=='undefined' ? sequential : true;
-    if(sequential){
+  loadScripts: function(){
+    return function(scripts,callback,sequential){
+      sequential = $.type(sequential)!=='undefined' ? sequential : true;
+      sequential ? loadSequentialScripts(scripts,callback) : loadConcurrentScripts(scripts,callback);
+    }
+
+    function loadSequentialScripts(scripts,callback){
       var script;
       scripts.length ? $.getScript(script = scripts.shift()).done(
-        $.loadScripts.bind(null,scripts,callback,sequential)
+        loadSequentialScripts.bind(null,scripts,callback)
       ).fail(failReport.bind(null,script)) : (callback && callback());
-    }else{
+    }
+
+    function loadConcurrentScripts(scripts,callback){
       scripts.length ? scripts.forEach(function(script){
         $.getScript(script).done(finishCheck).fail(failReport.bind(null,script))
       }) : (callback && callback());
-    }
 
-    var done_count = 0;
-    function finishCheck(){
-      ++done_count >= scripts.length && callback && callback();
+      var done_count = 0;
+      function finishCheck(){
+        ++done_count >= scripts.length && callback && callback();
+      }
     }
 
     function failReport(script){
       throw new Error(script+' load as script failed');
     }
-  }
+  }()
 });
