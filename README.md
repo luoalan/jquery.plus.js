@@ -58,15 +58,7 @@ https://github.com/IndigoUnited/jquery.destroy-event
 
 ##combine files
 ```
-  uglifyjs \  
-    less-pre.js \    
-    less.js \  
-    jquery.min.js \  
-    jquery.destroy-event.js \  
-    jquery.utilities.js \  
-    jquery.component.js \  
-    jquery.render.js \  
-    -o jquery.plus.min.js -c  
+  uglifyjs less-pre.js less.js jquery.min.js jquery.destroy-event.js jquery.utilities.js jquery.component.js jquery.render.js -o jquery.plus.min.js -c  
 ```
 
 ##start up

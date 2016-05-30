@@ -7,7 +7,7 @@
     defineComponent: function(name,src,version){
       name = encodeComponentName(name);
       if( hasComponent(name) )
-        throw new Error();
+      throw new Error();
       return defineComponent(name,src,version);
     }
   });
@@ -19,13 +19,7 @@
       !hasComponent(name) && defineComponent(
         name,
         this.attr('src') || original_name,
-        (function(){
-          try{
-            return eval(this.attr('version') || '');
-          }catch(e){
-            return this.attr('version') || '';
-          }
-        }).call(this)
+        getVersion(this)
       );
       parseComponent.call(this,name);
       return this;
@@ -99,8 +93,8 @@
     if(style.length){
       var less_str = '[cid='+cid+']'+style.html();
       less.render(less_str,function(err,res){
-          !err && $('head').append( style.html(res.css) );
-          err && console.warn('Failed to render style of ' + name);
+        !err && $('head').append( style.html(res.css) );
+        err && console.warn('Failed to render style of ' + name);
       });
     }
 
@@ -108,7 +102,7 @@
     var script = tmp_dom.children('script:not([src])');
     var remote_scripts = tmp_dom.children('script[src]');
     var dom = tmp_dom.children(':not(style):not(script):first');
-        dom = dom.length ? dom : this;
+    dom = dom.length ? dom : this;
     dom.attr('cid',cid);
 
     var main = new Function(script.html());
@@ -133,13 +127,20 @@
   }
 
   function loadScripts(scripts,callback){
-    var scripts = scripts.map(function(){
-      return this.src;
-    }).toArray();
+    var sequential_script_srcs = [];
+    var concurrent_script_srcs = [];
+    scripts.each(function(){
+      $(this).is('[concurrent]') ? concurrent_script_srcs.push(this.src) : sequential_script_srcs.push(this.src);
+    });
 
-    //todo support "local cache by version and unordered"
+    //todo support "local cache by version"
+    $.loadScripts(sequential_script_srcs, checkFinish, true);
+    $.loadScripts(concurrent_script_srcs, checkFinish, false);
 
-    $.loadScripts(scripts, callback)
+    var checkcount = 0;
+    function checkFinish(){
+      ++checkcount == 2 && callback && callback();
+    }
   }
 
   function execOnComponent(name,func){
@@ -152,6 +153,14 @@
 
   function hasComponent(name){
     return !!components[name];
+  }
+
+  function getVersion(jq_dom){
+    try{
+      return eval(jq_dom.attr('version') || '');
+    }catch(e){
+      return jq_dom.attr('version') || '';
+    }
   }
 
 }());

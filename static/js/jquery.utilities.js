@@ -88,17 +88,17 @@ $.extend({
     $.pushValue(info_cache, key, value);
     $.saveLocalJsonData(name,info_cache);
   },
-  loadScripts: function(scripts,callback,inqueue){
-    inqueue = $.type(inqueue)!=='undefined' ? inqueue : true;
-    if(inqueue){
+  loadScripts: function(scripts,callback,sequential){
+    sequential = $.type(sequential)!=='undefined' ? sequential : true;
+    if(sequential){
       var script;
       scripts.length ? $.getScript(script = scripts.shift()).done(
-        $.loadScripts.bind(null,scripts,callback,inqueue)
+        $.loadScripts.bind(null,scripts,callback,sequential)
       ).fail(failReport.bind(null,script)) : (callback && callback());
     }else{
-      scripts.forEach(function(script){
+      scripts.length ? scripts.forEach(function(script){
         $.getScript(script).done(finishCheck).fail(failReport.bind(null,script))
-      });
+      }) : (callback && callback());
     }
 
     var done_count = 0;
