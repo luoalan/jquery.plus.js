@@ -36,14 +36,17 @@ $.fn.extend({
   },
   render: function(data){
     var me = this;
-    this.data('gene',this.html());
+    var we = me.find('*').add(me);
+    me.data('gene',this.html());
     //save data first
-    $(me).setCoreData(data);
+    me.setCoreData(data);
 
     //condition judge first
-    $(me).find('[if]').filter(
-      parentsCannotHaveFilter(['.if-stuck','[component]'])
-    ).each(function(){
+    $(we).filter('[if]').filter(function(){
+      return $(this).get(0)===$(me).get(0) || parentsCannotHaveFilter(['.if-stuck','[component]']).call(this);
+    }).each(function(){
+      if( $(this).get(0)!==$(me).get(0) && $(me).is('.if-stuck') ){return;}
+
       var exprs = $(this).attr('if').split('AND');
       var result = true;
       exprs.forEach(function(expr){
@@ -54,7 +57,7 @@ $.fn.extend({
     });
 
     //render data
-    $(me).find('[data-src]').filter(renderable).each(function(){
+    $(we).filter('[data-src]').filter(renderable).each(function(){
       var expr = $(this).attr('data-src');
       var result = $(me).eval(expr);
 
@@ -72,14 +75,14 @@ $.fn.extend({
     });
 
     // special flag href
-    $(me).find('[data-href]').filter(renderable).each(function(){
+    $(we).filter('[data-href]').filter(renderable).each(function(){
       var expr = $(this).attr('data-href');
       var result = $(me).eval(expr);
       $(this).attr('href',result);
     });
 
     // special flag class
-    $(me).find('[data-class]').filter(renderable).each(function(){
+    $(we).filter('[data-class]').filter(renderable).each(function(){
       var expr = $(this).attr('data-class');
       var result = $(me).eval(expr);
       $(this).removeClass( $(this).attr('orz-class')||'' ).attr('orz-class',result);
@@ -87,7 +90,7 @@ $.fn.extend({
     });
 
     // special component
-    $(me).find('[component]').filter(renderable).each(function(){
+    $(we).filter('[component]').filter(renderable).each(function(){
       var component_name = $(this).attr('component');
       var zygote = $(this);
       zygote.container = me;

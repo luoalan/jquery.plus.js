@@ -28,6 +28,8 @@ $.extend({
     )
 
     subobj[ keys_arr.shift() ] = value;
+    
+    return obj;
   },
   dirtyCheck: function(key,value){
     return !$.cacheUnchangedCheck(key,value);
