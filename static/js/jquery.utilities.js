@@ -28,7 +28,7 @@ $.extend({
     )
 
     subobj[ keys_arr.shift() ] = value;
-    
+
     return obj;
   },
   dirtyCheck: function(key,value){
@@ -91,6 +91,8 @@ $.extend({
     $.saveLocalJsonData(name,info_cache);
   },
   loadScripts: function(){
+    var loadedScripts = [];
+
     return function(scripts,callback,sequential){
       sequential = $.type(sequential)!=='undefined' ? sequential : true;
       sequential ? loadSequentialScripts(scripts,callback) : loadConcurrentScripts(scripts,callback);
@@ -98,11 +100,25 @@ $.extend({
 
     //TODO: control the scripts cache and run it manualy
 
+    //TODO: cdn scripts and local scripts
+
     function loadSequentialScripts(scripts,callback){
       var script;
-      scripts.length ? $.getScript(script = scripts.shift()).done(
-        loadSequentialScripts.bind(null,scripts,callback)
-      ).fail(failReport.bind(null,script)) : (callback && callback());
+
+      if(!scripts.length){
+        return callback && callback()
+      }
+
+      script = scripts.shift();
+
+      if( loadedScripts.indexOf(script)>-1 ){
+        return loadSequentialScripts.bind(null,scripts,callback);
+      }
+
+      $.getScript(script).done(function(){
+        loadedScripts.push(script);
+        loadSequentialScripts.bind(null,scripts,callback);
+      }).fail(failReport.bind(null,script));
     }
 
     function loadConcurrentScripts(scripts,callback){
