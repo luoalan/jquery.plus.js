@@ -168,6 +168,7 @@
     scope_scripts.each(function(index,dom){
       if(this.src){
         $.ajax({url:this.src,dataType:'text'}).done(function(res){
+          //todo cache in localStorage
           scripts_str_array[index] = res;
           checkFinish();
         }).fail(function(){

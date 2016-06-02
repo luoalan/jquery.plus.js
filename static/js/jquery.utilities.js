@@ -112,12 +112,12 @@ $.extend({
       script = scripts.shift();
 
       if( loadedScripts.indexOf(script)>-1 ){
-        return loadSequentialScripts.bind(null,scripts,callback);
+        return loadSequentialScripts.call(null,scripts,callback);
       }
 
       $.getScript(script).done(function(){
         loadedScripts.push(script);
-        loadSequentialScripts.bind(null,scripts,callback);
+        loadSequentialScripts.call(null,scripts,callback);
       }).fail(failReport.bind(null,script));
     }
 
