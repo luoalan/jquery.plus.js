@@ -9,6 +9,7 @@
     </style>
 
     <script>
+      window.getVersion = function(){return /^(192\.168\.|localhost)/.test(window.location.host) ? Math.random() : 1;}
       document.write(
         /^(192\.168\.|localhost)/.test(window.location.host) ? `
           <script src="/static/js/less-pre.js"><\/script>
@@ -30,7 +31,7 @@
         $.defineComponent('title','/static/component/title.html',version);
         $.defineComponent('example','/static/component/example.html',version);
         $.defineComponent('human','/static/component/human.html',version);
-      }(Math.random());
+      }(window.getVersion());
 
       $(function(){
         $('body').render({hello:'jquery.plus.js'});
@@ -41,7 +42,7 @@
     <h1 if="hello" component="title">Hello <span data-src="hello"></span></h1>
     <div component="example"></div>
     <div component="human"></div>
-    <div component="/static/component/async.component.html" version="Math.random()">nihao,lala</div>
-    <div component="/static/component/async.scope.scripts.htm" version="Math.random()"></div>
+    <div component="/static/component/async.component.html" version="window.getVersion()">nihao,lala</div>
+    <div component="/static/component/async.scope.scripts.htm" version="window.getVersion()"></div>
   </body>
 </html>
