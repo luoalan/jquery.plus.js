@@ -31,9 +31,6 @@
     !hasComponent(name) && defineComponent(name,src);
   }
 
-  //TODO: getSrc(src,version).then(function(res){});
-  // callback, result.then, state
-
   function defineComponent(name,src,version){
     name = encodeComponentName(name);
     //预编译模版

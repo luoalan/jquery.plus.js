@@ -2,6 +2,15 @@ $.extend({
   randomId: function(prefix){
     return (prefix||'')+( new Date().valueOf().toString(36)+Math.random().toString(36) ).split('0.').join('_').substr(0,12);
   },
+  safeKey: function(key){
+    return key.replace(/\./g,'__').replace(/\//g,'_-');
+  },
+  isUndefined: function(value){
+    return /Null|Undefined/.test(Object.prototype.toString.call(value));
+  },
+  defaultValue: function(value,default_value){
+    return $.isUndefined(value) ? default_value : value;
+  },
   pullValue: function(obj,key,default_value){
     var keys_arr = key.split('.');
     var subobj = obj;
@@ -77,19 +86,73 @@ $.extend({
     var prefix = 'rango_';
     localStorage[prefix+name] = JSON.stringify(obj);
   },
-  getLocalJsonData: function(name){
+  getLocalJsonData: function(name,key){
     var prefix = 'rango_';
     try{
-      return JSON.parse(localStorage[prefix+name]);
+      var result = JSON.parse(localStorage[prefix+name]);
+      return key ? $.pullValue(result,key) : result;
     }catch(e){
       return;
     }
   },
   updateLocalJsonData: function(name,key,value){
     var info_cache = $.getLocalJsonData(name) || {};
-    $.pushValue(info_cache, key, value);
+    if( /Null|Undefined/.test(Object.prototype.toString.call(value)) ){
+      delete info_cache[key];
+    }else{
+      info_cache[key] = value;
+    }
     $.saveLocalJsonData(name,info_cache);
   },
+  cacheSrcText: function(src,version,expiry){
+    var callback, text, result = {then:function(func){
+      text ? func(text) : (callback=func);
+    }};
+
+    expiry = $.defaultValue(expiry,31536000000); //default one year
+
+    var name = 'cached_src';
+    var key = $.safeKey(src);
+    data = $.getLocalJsonData(name,key);
+
+    if(
+      (text = $.pullValue(data,'text')) &&
+      $.pullValue(data,'version')==(version||'') &&
+      $.pullValue(data,'created_at',0)+ Math.min($.pullValue(data,'expiry',0),expiry) >= new Date().valueOf()
+    ){
+      return result;
+    }
+
+    text = null;
+    $.ajax({url:src,dataType:'text'}).done(function(res){
+      text = res;
+
+      updateLocalJsonData(name,key,expiry?{
+        text: text,
+        version: version||'',
+        created_at: new Date().valueOf(),
+        expiry: expiry
+      }:null);
+
+      callback && callback(text);
+    });
+
+    return result;
+  },
+  cleanCacheSrc: function(){
+    //exec once at defining
+    cleanCacheSrc();
+    return cleanCacheSrc;
+
+    function cleanCacheSrc(){
+      var name = 'cached_src',
+      var dataset = $.getLocalJsonData(name);
+      for(i in dataset) data.hasOwnProperty(i) && function(key){
+        var data = dataset[i];
+        $.pullValue(data,'created_at',0)+$.pullValue(data,'expiry',0) < new Date().valueOf() && updateLocalJsonData(name,key);
+      }(i);
+    }
+  }(),
   loadScripts: function(){
     var loadedScripts = [];
 
