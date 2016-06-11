@@ -141,11 +141,11 @@ $.extend({
   },
   cleanCacheSrc: function(){
     //exec once at defining
-    cleanCacheSrc();
+    (window.requestAnimationFrame||setTimeout)(cleanCacheSrc);
     return cleanCacheSrc;
 
     function cleanCacheSrc(){
-      var name = 'cached_src',
+      var name = 'cached_src';
       var dataset = $.getLocalJsonData(name);
       for(i in dataset) data.hasOwnProperty(i) && function(key){
         var data = dataset[i];
