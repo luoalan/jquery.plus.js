@@ -199,5 +199,21 @@ $.extend({
     function failReport(script){
       throw new Error(script+' load as script failed');
     }
-  }()
+  }(),
+  locationSearchVal: function(){
+    var params = {};
+    location.search.replace(/^\?/,'').split('&').forEach(function(x){
+        params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
+    });
+    return function(key){
+        return params[key];
+    };
+  }(),
+  locationHashVal: function(key){
+    var params = {};
+    location.hash.replace(/^\#/,'').split('&').forEach(function(x){
+        params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
+    });
+    return params[key];
+  }
 });

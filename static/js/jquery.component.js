@@ -89,6 +89,7 @@
     var tmp_dom = $('<div>').html(template);
 
     //css
+    //TODO: style share with all instances from one component
     var style = tmp_dom.children('style');
     if(style.length){
       var less_str = '[cid='+cid+']'+style.html();
