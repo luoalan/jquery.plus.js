@@ -86,13 +86,13 @@ $.extend({
     var prefix = 'rango_';
     localStorage[prefix+name] = JSON.stringify(obj);
   },
-  getLocalJsonData: function(name,key){
+  getLocalJsonData: function(name,key,default_value){
     var prefix = 'rango_';
     try{
       var result = JSON.parse(localStorage[prefix+name]);
-      return key ? $.pullValue(result,key) : result;
+      return key ? $.pullValue(result,key,default_value) : result;
     }catch(e){
-      return;
+      return default_value;
     }
   },
   updateLocalJsonData: function(name,key,value){
@@ -103,6 +103,17 @@ $.extend({
       info_cache[key] = value;
     }
     $.saveLocalJsonData(name,info_cache);
+  },
+  //if cached, return cache, else, cache value and return value
+  cacheLocalJsonData: function(name,key,value){
+    if(
+      /Null|Undefined/.test(Object.prototype.toString.call($.getLocalJsonData(name,key))) &&
+      !/Null|Undefined/.test(Object.prototype.toString.call(value))
+    ){
+      return ($.updateLocalJsonData(name,key,value),value);
+    }else{
+      return $.getLocalJsonData(name,key);
+    }
   },
   cacheSrcText: function(src,version,expiry){
     var callback, text, result = {then:function(func){
@@ -203,16 +214,16 @@ $.extend({
   locationSearchVal: function(){
     var params = {};
     location.search.replace(/^\?/,'').split('&').forEach(function(x){
-        params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
+      params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
     });
     return function(key){
-        return params[key];
+      return params[key];
     };
   }(),
   locationHashVal: function(key){
     var params = {};
     location.hash.replace(/^\#/,'').split('&').forEach(function(x){
-        params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
+      params[ x.replace(/\=.*/,'') ] = decodeURIComponent( x.replace(/.*\=/,'') );
     });
     return params[key];
   }
