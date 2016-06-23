@@ -19,7 +19,7 @@
       !hasComponent(name) && defineComponent(
         name,
         this.attr('src') || original_name,
-        getVersion(this)
+        $(this).getVersion()
       );
       parseComponent.call(this,name);
       return this;
@@ -89,7 +89,7 @@
     var tmp_dom = $('<div>').html(template);
 
     //css
-    //TODO: style share with all instances from one component
+    //all component instances share one style
     var style = tmp_dom.children('style');
     if(style.length && !component.style){
       var less_str = '[cname='+name+']'+style.html();
@@ -104,7 +104,7 @@
     var scope_scripts = tmp_dom.children('script:not([src]),script[src][scope]');
     // global_scripts, just run one time before scope_scripts;
     var global_scripts = tmp_dom.children('script[src]:not([scope])');
-
+    
     var dom = tmp_dom.children(':not(style):not(script):first');
     dom = dom.length ? dom : this;
     dom.attr('cid',cid).attr('cname',name);
@@ -127,61 +127,11 @@
     $(this).replaceWith(dom);
 
     dom.addClass('scripts-loading');
-    loadGlobalScripts(global_scripts,loadScopeScripts.bind(null, scope_scripts, function(res){
+    $.loadGlobalScripts(global_scripts, $.loadScopeScripts.bind(null, scope_scripts, function(res){
       dom.removeClass('scripts-loading').addClass('scripts-loaded');
-      var main = new Function(res);
+      var main = new Function('me','me=this;'+res);
       main.call(dom);
     }));
-  }
-
-  function loadGlobalScripts(scripts,callback){
-    if(!scripts.length){
-      callback && callback();
-      return;
-    }
-
-    var checkcount = 0;
-    var sequential_script_srcs = [];
-    var concurrent_script_srcs = [];
-    scripts.each(function(){
-      $(this).is('[concurrent]') ? concurrent_script_srcs.push(this.src) : sequential_script_srcs.push(this.src);
-    });
-
-    //todo support "local cache by version"
-    $.loadScripts(sequential_script_srcs, checkFinish, true);
-    $.loadScripts(concurrent_script_srcs, checkFinish, false);
-
-    function checkFinish(){
-      ++checkcount == 2 && callback && callback();
-    }
-  }
-
-  function loadScopeScripts(scope_scripts, callback){
-    if(!scope_scripts.length){
-      callback && callback('');
-      return;
-    }
-
-    var checkcount = 0;
-    var scripts_str_array = [];
-    scope_scripts.each(function(index,dom){
-      if(this.src){
-        $.ajax({url:this.src,dataType:'text'}).done(function(res){
-          //todo cache in localStorage
-          scripts_str_array[index] = res;
-          checkFinish();
-        }).fail(function(){
-          throw new Error(dom.src + ' load failed')
-        });
-      }else{
-        scripts_str_array[index] = this.innerHTML;
-        checkFinish();
-      }
-    });
-
-    function checkFinish(){
-      ++checkcount == scope_scripts.length && callback && callback( scripts_str_array.join(';') );
-    }
   }
 
   function execOnComponent(name,func){
@@ -195,13 +145,4 @@
   function hasComponent(name){
     return !!components[name];
   }
-
-  function getVersion(jq_dom){
-    try{
-      return eval(jq_dom.attr('version') || '');
-    }catch(e){
-      return jq_dom.attr('version') || '';
-    }
-  }
-
 }());

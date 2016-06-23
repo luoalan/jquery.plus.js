@@ -1,3 +1,13 @@
+$.fn.extend({
+  getVersion: function(){
+    try{
+      return eval(this.attr('version') || '');
+    }catch(e){
+      return this.attr('version') || '';
+    }
+  }
+});
+
 $.extend({
   randomId: function(prefix){
     return (prefix||'')+( new Date().valueOf().toString(36)+Math.random().toString(36) ).split('0.').join('_').substr(0,12);
@@ -138,7 +148,7 @@ $.extend({
     $.ajax({url:src,dataType:'text'}).done(function(res){
       text = res;
 
-      updateLocalJsonData(name,key,expiry?{
+      $.updateLocalJsonData(name,key,expiry?{
         text: text,
         version: version||'',
         created_at: new Date().valueOf(),
@@ -158,59 +168,53 @@ $.extend({
     function cleanCacheSrc(){
       var name = 'cached_src';
       var dataset = $.getLocalJsonData(name);
-      for(i in dataset) data.hasOwnProperty(i) && function(key){
+      for(i in dataset) dataset.hasOwnProperty(i) && function(key){
         var data = dataset[i];
         $.pullValue(data,'created_at',0)+$.pullValue(data,'expiry',0) < new Date().valueOf() && updateLocalJsonData(name,key);
       }(i);
     }
   }(),
-  loadScripts: function(){
-    var loadedScripts = [];
+  loadGlobalScripts: function(){
+    var cache = {};
 
-    return function(scripts,callback,sequential){
-      sequential = $.type(sequential)!=='undefined' ? sequential : true;
-      sequential ? loadSequentialScripts(scripts,callback) : loadConcurrentScripts(scripts,callback);
-    }
+    return function(scripts,callback){
+      scripts.each(function(){
+        !cache[this.src] && $.cacheSrcText(this.src, $(this).getVersion()).then(function(res){
+          $.globalEval(res);
+          cache[this.src] = true;
+          checkFinish();
+        });
+      });
 
-    //TODO: control the scripts cache and run it manualy
+      checkFinish();
 
-    //TODO: cdn scripts and local scripts
-
-    function loadSequentialScripts(scripts,callback){
-      var script;
-
-      if(!scripts.length){
-        return callback && callback()
+      function checkFinish(){
+        !scripts.filter(function(){
+          return !cache[this.src];
+        }).length && callback && callback();
       }
-
-      script = scripts.shift();
-
-      if( loadedScripts.indexOf(script)>-1 ){
-        return loadSequentialScripts.call(null,scripts,callback);
-      }
-
-      $.getScript(script).done(function(){
-        loadedScripts.push(script);
-        loadSequentialScripts.call(null,scripts,callback);
-      }).fail(failReport.bind(null,script));
-    }
-
-    function loadConcurrentScripts(scripts,callback){
-      var done_count = 0;
-
-      scripts.length ? scripts.forEach(function(script){
-        $.getScript(script).done(finishCheck).fail(failReport.bind(null,script))
-      }) : (callback && callback());
-
-      function finishCheck(){
-        ++done_count == scripts.length && callback && callback();
-      }
-    }
-
-    function failReport(script){
-      throw new Error(script+' load as script failed');
     }
   }(),
+  loadScopeScripts: function(scripts,callback){
+    var checkcount = 0;
+    var scripts_str_array = [];
+
+    scripts.each(function(index){
+      if(this.src){
+        $.cacheSrcText(this.src, $(this).getVersion()).then(function(res){
+          scripts_str_array[index] = res;
+          checkFinish();
+        });
+      }else{
+        scripts_str_array[index] = this.innerHTML;
+        checkFinish();
+      }
+    });
+
+    function checkFinish(){
+      ++checkcount == scripts.length && callback && callback( scripts_str_array.join(';') );
+    }
+  },
   locationSearchVal: function(){
     var params = {};
     location.search.replace(/^\?/,'').split('&').forEach(function(x){
