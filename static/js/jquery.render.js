@@ -41,6 +41,8 @@ $.fn.extend({
     //save data first
     me.setCoreData(data);
 
+    //TODO: use $().addBack(selector);
+
     //condition judge first
     $(we).filter('[if]').filter(function(){
       return $(this).get(0)===$(me).get(0) || parentsCannotHaveFilter(['.if-stuck','[component]']).call(this);

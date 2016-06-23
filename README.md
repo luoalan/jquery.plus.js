@@ -63,9 +63,5 @@ https://github.com/IndigoUnited/jquery.destroy-event
 
 ##start up
 ```
-  sudo nodemon index.js \  
-   -root ../jquery.plus.js/ \  
-   -port 80 \  
-   -w ../jquery.plus.js/server \  
-   -w ./ -d 3  
+  sudo nodemon index.js -root ../jquery.plus.js/ -port 80 -w ../jquery.plus.js/server -w ./ -d 3  
 ```

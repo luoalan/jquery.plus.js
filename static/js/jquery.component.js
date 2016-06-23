@@ -91,12 +91,13 @@
     //css
     //TODO: style share with all instances from one component
     var style = tmp_dom.children('style');
-    if(style.length){
-      var less_str = '[cid='+cid+']'+style.html();
+    if(style.length && !component.style){
+      var less_str = '[cname='+name+']'+style.html();
       less.render(less_str,function(err,res){
         !err && $('head').append( style.html(res.css) );
         err && console.warn('Failed to render style of ' + name);
       });
+      component.style = style;
     }
 
     // scope_scripts, combine in one function named main and run after every instance created.
@@ -106,7 +107,7 @@
 
     var dom = tmp_dom.children(':not(style):not(script):first');
     dom = dom.length ? dom : this;
-    dom.attr('cid',cid);
+    dom.attr('cid',cid).attr('cname',name);
 
     component.instances.push(cid);
     dom.on('destroy',function(){
