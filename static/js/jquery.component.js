@@ -81,7 +81,6 @@
     component.instances.push(cid);
     dom.on('destroy',function(){
       component.instances.splice(component.instances.indexOf(cid),1);
-      style.remove();
     });
     dom.remove = function(){
       //this will trigger jquery clearData;

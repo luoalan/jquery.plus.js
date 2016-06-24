@@ -27,13 +27,17 @@ https://github.com/IndigoUnited/jquery.destroy-event
   saveLocalJsonData
   getLocalJsonData
   updateLocalJsonData
-  loadScripts
+  cacheSrcText
+  cleanCacheSrc
+  loadGlobalScripts
+  loadScopeScripts
+  locationSearchVal
+  locationHashVal
 ```
 
 ### jquery.component.js
 ```
   //Add some method to jQuery
-  defineComponentOnce
   defineComponent
 
   //Add some method to jQuery.fn

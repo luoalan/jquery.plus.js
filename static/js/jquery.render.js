@@ -127,7 +127,7 @@ $.fn.extend({
   },
   reload: function(data){
     if(this.is('.rendered')){
-      var cloneBody = $(this.data('gene'));
+      var cloneBody = this.data('gene');
       this.html( cloneBody );
     }
     return this.render(data);

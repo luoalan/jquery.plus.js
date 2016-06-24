@@ -178,10 +178,10 @@ $.extend({
     var cache = {};
 
     return function(scripts,callback){
-      scripts.each(function(){
+      scripts.each(function(index,script){
         !cache[this.src] && $.cacheSrcText(this.src, $(this).getVersion()).then(function(res){
           $.globalEval(res);
-          cache[this.src] = true;
+          cache[script.src] = true;
           checkFinish();
         });
       });
@@ -189,9 +189,12 @@ $.extend({
       checkFinish();
 
       function checkFinish(){
-        !scripts.filter(function(){
+        if(!scripts.filter(function(){
           return !cache[this.src];
-        }).length && callback && callback();
+        }).length){
+          checkFinish = $.noop;
+          callback && callback();
+        };
       }
     }
   }(),
@@ -212,7 +215,10 @@ $.extend({
     });
 
     function checkFinish(){
-      ++checkcount == scripts.length && callback && callback( scripts_str_array.join(';') );
+      if(++checkcount == scripts.length){
+        checkFinish = $.noop;
+        callback && callback( scripts_str_array.join(';') );
+      }
     }
   },
   locationSearchVal: function(){
