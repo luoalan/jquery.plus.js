@@ -15,15 +15,38 @@
   $.fn.extend({
     parseAsComponent: function(name){
       safe_name = $.safeKey(name);
+
+      //TODO: 相对路径补全
+
       !hasComponent(safe_name) && defineComponent(
         safe_name,
-        this.attr('src') || name,
-        $(this).getVersion()
+        getSrcPathname(this, name),
+        this.getVersion()
       );
+
       parseComponent.call(this, safe_name);
       return this;
     }
   });
+
+  function getSrcPathname($dom,name){
+    var src = $dom.attr('src') || name;
+    if(/^\./.test(src)){
+      var directory = $dom.closest('[cdirectory]').attr('cdirectory') || location.pathname.replace(/\/[^\/]*$/,'/');
+      src = relPathToAbs(directory+src);
+    }
+    return src;
+  }
+
+  //https://developer.mozilla.org/en-US/docs/Web/API/document/cookie#Using_relative_URLs_in_the_path_parameter
+  function relPathToAbs (sRelPath) {
+    var nUpLn, sDir = "", sPath = location.pathname.replace(/[^\/]*$/, sRelPath.replace(/(\/|^)(?:\.?\/+)+/g, "$1"));
+    for (var nEnd, nStart = 0; nEnd = sPath.indexOf("/../", nStart), nEnd > -1; nStart = nEnd + nUpLn) {
+      nUpLn = /^\/(?:\.\.\/)*/.exec(sPath.slice(nEnd))[0].length;
+      sDir = (sDir + sPath.substring(nStart, nEnd)).replace(new RegExp("(?:\\\/+[^\\\/]*){0," + ((nUpLn - 1) / 3) + "}$"), "/");
+    }
+    return sDir + sPath.substr(nStart);
+  }
 
   function parseComponent(name){
     componentReady(name, produceComponent.bind(this,name));
@@ -34,8 +57,12 @@
     $.pushValue(components,name,{
       ready: false,
       tasks: [],
-      instances: []
+      instances: [],
+      src: src,
+      version: version
     });
+
+    // console.log(components);
 
     $.cacheSrcText(src,version).then(function(res){
       $.pushValue(components,name+'.template',res);
@@ -58,6 +85,7 @@
     var component = components[name];
     var template = component['template'];
     var tmp_dom = $('<div>').html(template);
+    var directory = component.src.replace(/\/[^\#\/]*(\#.*)*$/,'/'); //组件目录
 
     var style = tmp_dom.children('style');
     if(style.length && !component.style){
@@ -75,13 +103,24 @@
     var scope_scripts = tmp_dom.children('script:not([src]),script[src][scope]');
 
     var dom = tmp_dom.children(':not(style):not(script):first');
-    dom = dom.length ? dom : this;
-    dom.attr('cid',cid).attr('cname',name);
+    dom = dom.length ? dom.removeAttr('component').removeAttr('version') : this;
+    dom.attr('cid',cid).attr('cname',name).attr('cdirectory',directory);
 
-    component.instances.push(cid);
+    var instance = {
+      cid: cid,
+      $dom: dom,
+      $style: component.style,
+      dom: dom.get(0),
+      style:component.style && component.style.get(0)
+    };
+
+    component.instances.push(instance);
     dom.on('destroy',function(){
-      component.instances.splice(component.instances.indexOf(cid),1);
+      component.instances.splice(component.instances.indexOf(instance),1);
+    }).on('dbclick',function(){
+      console.log(instance);
     });
+
     dom.remove = function(){
       //this will trigger jquery clearData;
       $('[cid='+cid+']').remove();
