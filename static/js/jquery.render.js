@@ -93,10 +93,9 @@ $.fn.extend({
 
     // special component
     $(we).filter('[component]').filter(renderable).each(function(){
-      var component_name = $(this).attr('component');
       var zygote = $(this);
       zygote.container = me;
-      zygote.parseAsComponent(component_name);
+      zygote.parseAsComponent();
     });
 
     return me.addClass('rendered');

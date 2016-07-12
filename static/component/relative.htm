@@ -1,8 +1,12 @@
 <div>
+  <div>MSG: <span data-src="msg"></span></div>
   <div component="./relative/sub1.htm" version="window.getVersion()"></div>
   <div component="../component/relative/sub2.htm" version="window.getVersion()"></div>
 </div>
 
+<script src="./relative/index.js" scope></script>
 <script>
-  me.render();
+  me.render({
+    msg: relativeConsole()
+  });
 </script>

@@ -39,6 +39,7 @@ https://github.com/IndigoUnited/jquery.destroy-event
 ```
   //Add some method to jQuery
   defineComponent
+  preloadComponent
 
   //Add some method to jQuery.fn
   parseAsComponent

@@ -8,7 +8,9 @@
       body{transition:background 1s;}
     </style>
     <script>
-      window.getVersion = function(){return /^(192\.168\.|localhost)/.test(window.location.host) ? Math.random() : 1;}
+      window.getVersion = function(){
+        return document.__version = (document.__version||(/^(192\.168\.|localhost)/.test(window.location.host) ? Math.random() : 1));
+      }
       document.write(
         /^(192\.168\.|localhost)/.test(window.location.host) ? `
           <script src="/static/js/less-pre.js"><\/script>
