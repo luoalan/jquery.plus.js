@@ -9,6 +9,27 @@ $.extend({
 $.fn.extend({
   eval: function(expression){
     var me = this;
+
+    if( /\sOR\s/.test(expression) ){
+        var exprs = expression.split('OR');
+        var result = false;
+        exprs.forEach(function(expr){
+            expr = expr.trim();
+            result = (result || $(me).omsEval(expr));
+        });
+        return result;
+    }
+
+    if( /\sAND\s/.test(expression) ){
+        var exprs = expression.split('AND');
+        var result = true;
+        exprs.forEach(function(expr){
+            expr = expr.trim();
+            result = (result && $(me).omsEval(expr));
+        });
+        return result;
+    }
+
     var data = $(this).getCoreData();
 
     var dataSrcArray = expression.split('|');
