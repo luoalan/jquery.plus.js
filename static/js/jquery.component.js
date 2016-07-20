@@ -137,6 +137,8 @@
   }
 
   function combineSrcWithDirectory(src,directory){
+    if(!/^\./.test(src)){return src;}
+
     var result = directory+src;
     var ruined_indexs = [];
 
