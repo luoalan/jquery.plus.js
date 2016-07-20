@@ -1,11 +1,11 @@
 <style>
-{overflow:hidden;}
+{padding:20px;}
 </style>
 <div>
   <h1>Main Board</h1>
 </div>
 <script>
 me.on('click','h1',function(){
-  $(this).clone().appendTo(me);
+  me.html( me.children().clone().addBack() );
 });
 </script>
