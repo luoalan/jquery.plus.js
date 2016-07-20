@@ -170,7 +170,7 @@ $.extend({
       var dataset = $.getLocalJsonData(name);
       for(i in dataset) dataset.hasOwnProperty(i) && function(key){
         var data = dataset[i];
-        $.pullValue(data,'created_at',0)+$.pullValue(data,'expiry',0) < new Date().valueOf() && updateLocalJsonData(name,key);
+        $.pullValue(data,'created_at',0)+$.pullValue(data,'expiry',0) < new Date().valueOf() && $.updateLocalJsonData(name,key);
       }(i);
     }
   }(),
