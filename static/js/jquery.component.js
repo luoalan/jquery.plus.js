@@ -122,6 +122,9 @@
     component.dom && $(this).replaceWith(dom);
 
     dom.addClass('scripts-loading');
+
+    //TODO: use with, prevent define veriable on global/window object defautly.
+
     $.loadGlobalScripts(component.global_scripts, $.loadScopeScripts.bind(null, component.scope_scripts, function(res){
       dom.removeClass('scripts-loading').addClass('scripts-loaded');
       var main = new Function('me','me=this;'+res);
@@ -134,16 +137,31 @@
   }
 
   function combineSrcWithDirectory(src,directory){
-    return /^\./.test(src) ? relPathToAbs(directory+src) : src;
+    var result = directory+src;
+    var ruined_indexs = [];
 
-    //https://developer.mozilla.org/en-US/docs/Web/API/document/cookie#Using_relative_URLs_in_the_path_parameter
-    function relPathToAbs (sRelPath) {
-      var nUpLn, sDir = "", sPath = location.pathname.replace(/[^\/]*$/, sRelPath.replace(/(\/|^)(?:\.?\/+)+/g, "$1"));
-      for (var nEnd, nStart = 0; nEnd = sPath.indexOf("/../", nStart), nEnd > -1; nStart = nEnd + nUpLn) {
-        nUpLn = /^\/(?:\.\.\/)*/.exec(sPath.slice(nEnd))[0].length;
-        sDir = (sDir + sPath.substring(nStart, nEnd)).replace(new RegExp("(?:\\\/+[^\\\/]*){0," + ((nUpLn - 1) / 3) + "}$"), "/");
+    result = result.split('/');
+
+    result.map(function(x,i,a){
+      var prev_index = getUnRuinedPrevIndex(i);
+      if(x=='.'){
+        ruined_indexs.push(i);
       }
-      return sDir + sPath.substr(nStart);
+      if(x=='..'){
+        ruined_indexs.push(i);
+        ruined_indexs.push(prev_index);
+      }
+    });
+
+    result = result.filter(function(x,i,a){
+      return ruined_indexs.indexOf(i)<0;
+    }).join('/');
+
+    return result;
+
+    function getUnRuinedPrevIndex(i){
+      while( (i-- > -1) && (ruined_indexs.indexOf(i)>-1) ){}
+      return i;
     }
   }
 }());

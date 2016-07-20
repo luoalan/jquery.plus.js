@@ -1,0 +1,38 @@
+<style>
+{color:#35414f;box-sizing:border-box;height:100%;min-width:900px;
+  *{box-sizing:inherit;}
+
+  >header{height:50px;background:#2b3642;color:#999999;}
+  >.body{
+    >nav{}
+    >div{
+
+      >main{}
+      >footer{}
+    }
+  }
+}
+</style>
+
+<div>
+  <header><div component="./header.htm" version="ENV.version"></div></header>
+  <div class="body">
+    <nav>
+      <main><div component="./nav.htm" version="ENV.version"></div></main>
+    </nav>
+    <div>
+      <main><div component="./main.htm" version="ENV.version"></div></main>
+      <footer><div component="./footer.htm" version="ENV.version"></div></footer>
+    </div>
+  </div>
+</div>
+
+<script>
+var header = me.find('>header');
+var body = me.find('>.body');
+var nav = body.find('>nav');
+var board = body.find('>div');
+var main = board.find('>main');
+var footer = board.find('>footer');
+me.render();
+</script>

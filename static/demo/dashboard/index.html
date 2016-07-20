@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <title data-src="title">jQuery.plus.js Demo</title>
+    <style>
+      html,body{height:100%;}
+    </style>
+    <script>
+    document.write(
+      /^(192\.168\.|localhost)/.test(window.location.host) ? `
+        <script src="/static/js/less-pre.js"><\/script>
+        <script src="/static/js/less.js"><\/script>
+        <script src="/static/js/jquery.min.js"><\/script>
+        <script src="/static/js/jquery.destroy-event.js"><\/script>
+        <script src="/static/js/jquery.utilities.js"><\/script>
+        <script src="/static/js/jquery.component.js"><\/script>
+        <script src="/static/js/jquery.render.js"><\/script>
+      ` : `
+        <script src="/static/js/jquery.plus.min.js"><\/script>
+      `
+    );
+    </script>
+    <!-- <script src="/static/js/jquery.plus.min.js"></script> -->
+    <script>
+      //Global environment
+      window.ENV = {
+        version: /^(192\.168\.|localhost)/.test(location.host) ? Math.random() : 1
+      };
+
+      $(function(){
+        $('html>head,html>body').render({title:'Dashboard by jQuery.plus.js'});
+      });
+    </script>
+  </head>
+  <body>
+    <div component="./component/index.htm" version="ENV.version"></div>
+  </body>
+</html>
