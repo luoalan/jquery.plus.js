@@ -48,6 +48,8 @@
   }
 
   function defineComponent(name,src,version){
+    //TODO: extend src-type to #dom_id && <tagName></tagName> str
+
     //预编译模版
     $.pushValue(components,name,{
       ready: false,
@@ -76,9 +78,13 @@
       });
       component.style = style;
 
+      //TODO: preload global_scripts && scope_scripts && sub-components in component;
+
       component.global_scripts = tmp_dom.children('script[src]:not([scope])');
       component.scope_scripts = tmp_dom.children('script:not([src]),script[src][scope]');
       component.dom = tmp_dom.children(':not(style):not(script):first').prop('outerHTML');
+      //TODO: extend component from component
+
       component.family_share = {};
       component.ready = true;
 
