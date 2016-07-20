@@ -51,22 +51,24 @@ var nav_wrap = body.find('>nav>.cell-wrap');
 var header_height = header.height();
 var old_height = 0;
 
-$(function(){
-  resetWrapHeight();
+resetWrapHeight();
+recognizeNavScrollTop();
+
+$(window).on('resize',resetWrapHeight).on('beforeunload',memorizeNavScrollTop);
+
+me.on('destroy',function(){
+  $(window).off('resize',resetWrapHeight).off('beforeunload',memorizeNavScrollTop);
+});
+
+function memorizeNavScrollTop(){
+  $.updateLocalJsonData('etc', 'side_nav_scrollTop', nav_wrap.get(0).scrollTop);
+}
+
+function recognizeNavScrollTop(){
   setTimeout(function(){
     nav_wrap.get(0).scrollTop = +$.getLocalJsonData('etc', 'side_nav_scrollTop', 0);
   });
-});
-
-$(window).on('resize',
-  resetWrapHeight
-).on('beforeunload',function(){console.log(nav_wrap.get(0).scrollTop);
-  $.updateLocalJsonData('etc', 'side_nav_scrollTop', nav_wrap.get(0).scrollTop);
-});
-
-me.on('destroy',function(){
-  $(window).off('resize',resetWrapHeight);
-});
+}
 
 function resetWrapHeight(){
   var new_height = $(window).height()-header_height;
