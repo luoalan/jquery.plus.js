@@ -73,10 +73,12 @@
 
       var style = tmp_dom.children('style');
       style.length && less.render('[cname='+name+']'+style.html(),function(err,res){
-        !err && $('head').append( style.html(res.css) );
-        err && console.warn('Failed to render style of ' + name);
+        if(!err){
+          component.style = $('<style>'+res.css+'</style>').appendTo( $('head') );
+        }else{
+          console.warn('Failed to render style of ' + name);
+        }
       });
-      component.style = style;
 
       //TODO: preload global_scripts && scope_scripts && sub-components in component;
 
