@@ -1,0 +1,21 @@
+<style>
+{transition:all .5s ease;}
+</style>
+
+<div>
+  <h1>Passage C</h1>
+</div>
+
+<script>
+var interval = setInterval(function(){
+  me.css('color',randomColor());
+},500);
+
+me.on('destroy',function(){
+  clearInterval(interval);
+});
+
+function randomColor(){
+  return '#' + parseInt(Math.random()*255*255*255).toString(16);
+}
+</script>

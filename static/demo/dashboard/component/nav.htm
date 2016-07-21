@@ -1,57 +1,48 @@
 <style>
-{padding:20px;color:#fff;}
+{
+  @padding-width:20px;
+  padding-top:@padding-width;color:#fff;
+  >[rows-body]{
+    a{display:block;height:40px;padding:0 @padding-width;line-height:40px;color:#fff;text-decoration:none;cursor:pointer;
+      &.active,&:hover{background:#2b3642;}
+    }
+  }
+}
 </style>
+
 <div>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
-  <h1>Nav</h1>
+  <div rows-body></div>
+  <script type="text/html" row-tpl>
+    <a data-src="name" data-href="href"></a>
+  </script>
 </div>
+
 <script>
-me.on('click','h1',function(){
-  me.html( me.children().clone().addBack() );
+me.container.on('main:pages_registered',navRegister).on('main:actived',navActive);
+
+me.on('click','[rows-body] a',function(){
+  if($(this).is('.active')){return false;}
+
+  var page = $(this).getCoreData();
+  var active_page = {};
+  active_page[page.href] = true;
+  me.trigger({type:'nav:active',active_page:active_page});
+  return false;
+}).on('destroy',function(){
+  me.container.off('main:pages:registered',navRegister).off('main:actived',navActive);
 });
+
+function navRegister(event){
+  var pages = event.pages;
+  me.renderTable(pages);
+}
+
+function navActive(event){
+  var active_page = event.active_page;
+  for(var key in active_page){break;}
+  me.find('[rows-body] a').filter(function(){
+    var page = $(this).getCoreData();
+    return page.href == key;
+  }).addClass('active').siblings().removeClass('active');
+}
 </script>

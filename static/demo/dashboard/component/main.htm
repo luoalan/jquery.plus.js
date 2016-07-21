@@ -3,9 +3,33 @@
 </style>
 <div>
   <h1>Main Board</h1>
+  <main>
+    <section if="a" component="./page/a.htm" version="ENV.version"></section>
+    <section if="b" component="./page/b.htm" version="ENV.version"></section>
+    <section if="c" component="./page/c.htm" version="ENV.version"></section>
+  </main>
 </div>
 <script>
-me.on('click','h1',function(){
-  me.html( me.children().clone().addBack() );
+var pages = me.find('>main>section').map(function(){
+  var key = $(this).attr('if');
+  return {
+    name: "Page "+key.toUpperCase(),
+    href: key
+  }
+}).get();
+me.trigger({type:'main:pages_registered',pages:pages});
+
+me.container.on('nav:active',navActive);
+
+me.on('destroy',function(){
+  me.container.off('nav:active',navActive);
 });
+
+navActive({active_page:{a:true}});
+
+function navActive(event){
+  var active_page = event.active_page;
+  me.reload(active_page);
+  me.trigger({type:'main:actived',active_page:active_page})
+}
 </script>
