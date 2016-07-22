@@ -1,18 +1,20 @@
 <style>
-{padding:20px;}
+{
+  height:100%;
+}
 </style>
 
 <div>
-  <section nav="a" component="./page/a.htm" version="ENV.version"></section>
-  <section nav="b" component="./page/b.htm" version="ENV.version"></section>
-  <section nav="c" component="./page/c.htm" version="ENV.version"></section>
+  <section nav="William Shakespeare" component="./page/a.htm" version="ENV.version"></section>
+  <section nav="Sonnet 14" component="./page/b.htm" version="ENV.version"></section>
+  <section nav="那就是扯犊子" component="./page/c.htm" version="ENV.version"></section>
 </div>
 
 <script>
 var pages = me.find('>section').map(function(){
   var name = $(this).attr('nav');
   var id = $.randomId();
-  $(this).attr('nav-id',id).attr('if','active_page.id|=:'+id);
+  $(this).attr('if','active_page.id|=:'+id);
   return {
     name: name,
     id: id
@@ -26,8 +28,6 @@ me.container.on('nav:active',navActive);
 me.on('destroy',function(){
   me.container.off('nav:active',navActive);
 });
-
-navActive({active_page:pages[0]});
 
 function navActive(event){
   var active_page = event.active_page;

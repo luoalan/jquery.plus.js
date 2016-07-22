@@ -1,8 +1,24 @@
 <style>
 {
-  color:skyblue;
+  position:relative;height:100%;
+  &.loading{
+    &:before{content:'';display:block;width:22px;height:22px;position:absolute;top:0;left:0;
+      background:url('https://fly.yuanoook.com/file?hash=3737494fb17343511ec56a9c415521fc');
+    }
+  }
+  iframe{width:100%;height:100%;border:0;}
 }
 </style>
+
 <div>
-  <h1>Passage A</h1>
+  <iframe src="https://en.wikipedia.org/wiki/William_Shakespeare"/>
 </div>
+
+<script>
+me.addClass('loading');
+me.find('iframe').on('load',function(){
+  me.removeClass('loading');
+}).on('progress',function(event){
+  console.log(event);
+});
+</script>

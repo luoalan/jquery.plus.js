@@ -13,7 +13,7 @@
 <div>
   <div rows-body></div>
   <script type="text/html" row-tpl>
-    <a data-src="name" data-href="id"></a>
+    <a data-src="name"></a>
   </script>
 </div>
 
@@ -35,13 +35,26 @@ me.on('click','[rows-body] a',function(){
 function navRegister(event){
   pages = event.pages;
   me.renderTable(pages);
+  setTimeout(initActivePage);
 }
 
 function navActive(event){
   var active_page = event.active_page;
-  me.find('[rows-body] a').filter(function(){
+
+  var active_link = me.find('[rows-body] a').filter(function(){
     var page = $(this).getCoreData();
     return page == active_page;
-  }).addClass('active').siblings().removeClass('active');
+  }).addClass('active');
+
+  //memorize active_index
+  var active_index = me.find('[rows-body] a').index( active_link );
+  $.updateLocalJsonData('etc', 'side_nav_activeIndex', active_index);
+
+  active_link.siblings().removeClass('active');
+}
+
+function initActivePage(){
+  var active_index = +$.getLocalJsonData('etc', 'side_nav_activeIndex', 0);
+  me.find('[rows-body] a').eq(active_index).click();
 }
 </script>
