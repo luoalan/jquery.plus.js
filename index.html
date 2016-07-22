@@ -13,7 +13,7 @@
   <![endif]-->
   <script>
   window.getVersion = function(){
-    return document.__version = (document.__version||(/^(192\.168\.|localhost)/.test(window.location.host) ? Math.random() : 1));
+    return document.__version = (document.__version||(/^(192\.168\.|localhost)/.test(window.location.host) ? Math.random() : 2));
   }
   document.write(
     /^(192\.168\.|localhost)/.test(window.location.host) ? '\
@@ -46,7 +46,7 @@
 <body>
   <h1 if="hello" component="title">
     Hello jQuery.plus.js
-    <a href="./static/demo" style="font-size:16px">APPLICATION DEMO ></a>
+    <a href="./static/demo/dashboard/index.html" style="font-size:16px">APPLICATION DEMO ></a>
   </h1>
   <div component="example"></div>
   <div component="human"></div>
