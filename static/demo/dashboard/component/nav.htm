@@ -13,19 +13,19 @@
 <div>
   <div rows-body></div>
   <script type="text/html" row-tpl>
-    <a data-src="name" data-href="href"></a>
+    <a data-src="name" data-href="id"></a>
   </script>
 </div>
 
 <script>
+var pages;
+
 me.container.on('main:pages_registered',navRegister).on('main:actived',navActive);
 
 me.on('click','[rows-body] a',function(){
   if($(this).is('.active')){return false;}
 
-  var page = $(this).getCoreData();
-  var active_page = {};
-  active_page[page.href] = true;
+  var active_page = $(this).getCoreData();
   me.trigger({type:'nav:active',active_page:active_page});
   return false;
 }).on('destroy',function(){
@@ -33,16 +33,15 @@ me.on('click','[rows-body] a',function(){
 });
 
 function navRegister(event){
-  var pages = event.pages;
+  pages = event.pages;
   me.renderTable(pages);
 }
 
 function navActive(event){
   var active_page = event.active_page;
-  for(var key in active_page){break;}
   me.find('[rows-body] a').filter(function(){
     var page = $(this).getCoreData();
-    return page.href == key;
+    return page == active_page;
   }).addClass('active').siblings().removeClass('active');
 }
 </script>

@@ -1,22 +1,24 @@
 <style>
 {padding:20px;}
 </style>
+
 <div>
-  <h1>Main Board</h1>
-  <main>
-    <section if="a" component="./page/a.htm" version="ENV.version"></section>
-    <section if="b" component="./page/b.htm" version="ENV.version"></section>
-    <section if="c" component="./page/c.htm" version="ENV.version"></section>
-  </main>
+  <section nav="a" component="./page/a.htm" version="ENV.version"></section>
+  <section nav="b" component="./page/b.htm" version="ENV.version"></section>
+  <section nav="c" component="./page/c.htm" version="ENV.version"></section>
 </div>
+
 <script>
-var pages = me.find('>main>section').map(function(){
-  var key = $(this).attr('if');
+var pages = me.find('>section').map(function(){
+  var name = $(this).attr('nav');
+  var id = $.randomId();
+  $(this).attr('nav-id',id).attr('if','active_page.id|=:'+id);
   return {
-    name: "Page "+key.toUpperCase(),
-    href: key
+    name: name,
+    id: id
   }
 }).get();
+
 me.trigger({type:'main:pages_registered',pages:pages});
 
 me.container.on('nav:active',navActive);
@@ -25,11 +27,11 @@ me.on('destroy',function(){
   me.container.off('nav:active',navActive);
 });
 
-navActive({active_page:{a:true}});
+navActive({active_page:pages[0]});
 
 function navActive(event){
   var active_page = event.active_page;
-  me.reload(active_page);
+  me.reload({active_page:active_page});
   me.trigger({type:'main:actived',active_page:active_page})
 }
 </script>
