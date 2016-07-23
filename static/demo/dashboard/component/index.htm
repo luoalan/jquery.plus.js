@@ -47,27 +47,51 @@ var header = me.find('>header');
 var body = me.find('>.body');
 var wrap = body.find('>.cell>.cell-wrap');
 var nav_wrap = body.find('>nav>.cell-wrap');
+var main_wrap = body.find('>main>.cell-wrap');
+var active_page;
 
 var header_height = header.height();
 var old_height = 0;
+var mainWrapScrollTopRecognized = false;
 
 resetWrapHeight();
-recognizeNavScrollTop();
+recognizeScrollTop();
 
-$(window).on('resize',resetWrapHeight).on('beforeunload',memorizeNavScrollTop);
+$(window).on('resize',resetWrapHeight).on('beforeunload',memorizeScrollTop);
 
 me.on('destroy',function(){
-  $(window).off('resize',resetWrapHeight).off('beforeunload',memorizeNavScrollTop);
+  $(window).off('resize',resetWrapHeight).off('beforeunload',memorizeScrollTop);
 });
 
-function memorizeNavScrollTop(){
-  $.updateLocalJsonData('etc', 'side_nav_scrollTop', nav_wrap.get(0).scrollTop);
+me.on('main:actived',recognizePageMainWrapScrollTop);
+main_wrap.on('scroll',memorizePageMainWrapScrollTop);
+
+function memorizeScrollTop(){
+  $.updateLocalJsonData('etc', 'nav_wrap_scrollTop', nav_wrap.get(0).scrollTop);
+  $.updateLocalJsonData('etc', 'main_wrap_scrollTop', main_wrap.get(0).scrollTop);
 }
 
-function recognizeNavScrollTop(){
+function recognizeScrollTop(){
   setTimeout(function(){
-    nav_wrap.get(0).scrollTop = +$.getLocalJsonData('etc', 'side_nav_scrollTop', 0);
+    nav_wrap.get(0).scrollTop = +$.getLocalJsonData('etc', 'nav_wrap_scrollTop', 0);
+    main_wrap.get(0).scrollTop = +$.getLocalJsonData('etc', 'main_wrap_scrollTop', 0);
   });
+}
+
+function memorizePageMainWrapScrollTop(){
+  active_page && (active_page.scrollTop = $(this).get(0).scrollTop);
+}
+
+function recognizePageMainWrapScrollTop(event){
+  active_page = event.active_page;
+  if( mainWrapScrollTopRecognized ){
+    active_page.scrollTop && (main_wrap.get(0).scrollTop = active_page.scrollTop)
+  }else{
+    mainWrapScrollTopRecognized = true;
+    setTimeout(function(){
+      main_wrap.get(0).scrollTop = +$.getLocalJsonData('etc', 'main_wrap_scrollTop', 0)
+    });
+  }
 }
 
 function resetWrapHeight(){
