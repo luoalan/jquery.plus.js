@@ -178,6 +178,8 @@ $.extend({
     var cache = {};
 
     return function(scripts,callback){
+      if(!scripts.length){return callback && callback();}
+
       scripts.each(function(index,script){
         !cache[this.src] && $.cacheSrcText(this.src, $(this).getVersion()).then(function(res){
           $.globalEval(res);
@@ -199,6 +201,8 @@ $.extend({
     }
   }(),
   loadScopeScripts: function(scripts,callback){
+    if(!scripts.length){return callback && callback('');}
+
     var checkcount = 0;
     var scripts_str_array = [];
 

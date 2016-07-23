@@ -1,6 +1,7 @@
 <style>
 {
   height:100%;
+  >[window]{height:100%;}
 }
 </style>
 
@@ -14,15 +15,15 @@
 //TODO: add keep section feature, when nav:actived ,don't disappear
 //TODO: add repeat nav share one section feature
 
-var pages = me.find('>section').map(function(){
+var pages = me.find('>section').detach().map(function(){
   var name = $(this).attr('nav');
-  var id = $.randomId();
-  $(this).attr('if','active_page.id|=:'+id);
   return {
     name: name,
-    id: id
+    template: this
   }
 }).get();
+
+window.pages = pages;
 
 me.trigger({type:'main:pages_registered',pages:pages});
 
@@ -34,7 +35,15 @@ me.on('destroy',function(){
 
 function navActive(event){
   var active_page = event.active_page;
-  me.reload({active_page:active_page});
+  openPage(active_page);
   me.trigger({type:'main:actived',active_page:active_page})
+}
+
+function openPage(active_page){
+  me.find('>[window]').hide();
+  if(!active_page.window){
+    active_page.window = $('<div window>').appendTo(me).append(active_page.template).render();
+  }
+  active_page.window.show();
 }
 </script>
