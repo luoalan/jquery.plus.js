@@ -84,13 +84,26 @@ $.fn.extend({
 
       switch( $(this).prop('tagName').toLowerCase() ){
         case 'input':
-        $(this).val(result)
+          var input_type = $(this).prop('type');
+          switch( input_type ){
+            case 'checkbox':
+              result = (result==1||result===true);
+              $(this).prop('checked')!=result && $(this).prop('checked',result);
+              break;
+            case 'radio':
+              result = (result==1||result===true);
+              $(this).prop('checked')!=result && $(this).prop('checked',result);
+              break;
+            default:
+              $(this).val()!=result && $(this).val(result);
+              break;
+          }
         break;
         case 'img':
-        $(this).attr('src',result);
+          $(this).attr('src')!=result && $(this).attr('src',result);
         break;
         default:
-        $(this).html(result);
+          $(this).html()!=result && $(this).html(result);
         break;
       }
     });
