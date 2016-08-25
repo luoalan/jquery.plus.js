@@ -8,6 +8,12 @@
 
     //To watch the changing
     setInterval(function(){
+      var new_value = me.obj[me.key];
+      var new_value_type = Object.prototype.toString.call(new_value);
+      if('[object Undefined]'==new_value_type || '[object Null]'==new_value_type){
+        me.obj[me.key] = '{}';
+      }
+
       if( me.old_value != me.obj[me.key] ){
         me.old_value = me.obj[me.key];
         me.change();
@@ -30,6 +36,7 @@
       if(callback){
         this.changecallbacks.push(callback);
       }else{
+        console.log('changed');
         this.changecallbacks.forEach(function(callback){
           callback( me.obj[me.key] );
         });
