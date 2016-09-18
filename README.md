@@ -44,7 +44,7 @@ https://github.com/IndigoUnited/jquery.destroy-event
   parseAsComponent
   
   //TODO:
-    add parentOn mothed on me. it can auto off after me distroyed.
+    add containerOn mothed on me. it can auto off after me distroyed.
 ```
 
 ### jquery.render.js
