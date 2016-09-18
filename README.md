@@ -42,6 +42,9 @@ https://github.com/IndigoUnited/jquery.destroy-event
 
   //Add some method to jQuery.fn
   parseAsComponent
+  
+  //TODO:
+    add parentOn mothed on me. it can auto off after me distroyed.
 ```
 
 ### jquery.render.js
