@@ -43,8 +43,8 @@ https://github.com/IndigoUnited/jquery.destroy-event
   //Add some method to jQuery.fn
   parseAsComponent
   
-  //TODO:
-    add containerOn mothed on me. it can auto off after me distroyed.
+  //Add some method to me
+  containerOn
 ```
 
 ### jquery.render.js
