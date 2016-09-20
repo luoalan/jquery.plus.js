@@ -118,6 +118,15 @@
       remove: function(){
         //this will trigger jquery clearData;
         $('[cid='+cid+']').remove();
+      },
+      containerOn: function(){
+        //listen on event and auto off
+        var args = arguments;
+        var container = this.container;
+        this.container.on.apply(this.container, args);
+        this.on('destroy',function(){
+          container.off.apply(container, args);
+        });
       }
     });
 
