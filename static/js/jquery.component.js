@@ -127,6 +127,7 @@
         this.on('destroy',function(){
           container.off.apply(container, args);
         });
+        return this;
       }
     });
 

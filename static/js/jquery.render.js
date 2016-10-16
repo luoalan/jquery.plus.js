@@ -74,7 +74,7 @@ $.fn.extend({
         expr = expr.trim();
         result = $(me).eval(expr) && result;
       });
-      result ? $(this).addClass('if-pass').show() : $(this).addClass('if-stuck').hide();
+      result ? $(this).removeClass('if-stuck').addClass('if-pass').show() : $(this).removeClass('if-pass').addClass('if-stuck').hide();
     });
 
     //render data
